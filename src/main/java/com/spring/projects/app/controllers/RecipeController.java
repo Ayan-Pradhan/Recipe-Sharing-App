@@ -77,11 +77,6 @@ public class RecipeController {
 		return ResponseEntity.ok(favourites.getFavourites());
 	}
 	
-	@GetMapping("recipes/search/{keyword}")
-	public ResponseEntity<ResponseDto> searchRecipe(@RequestBody String keyword) {
-		return null;
-	}
-	
 	@PostMapping("recipes/recommend")
 	public ResponseEntity<ResponseDto> recommendRecipe(@RequestBody RecommendRequest details) {
 		return ResponseEntity.ok(recommendations.getRecommendedRecipes(details));
