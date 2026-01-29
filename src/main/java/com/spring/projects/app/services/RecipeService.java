@@ -14,6 +14,7 @@ import com.spring.projects.app.entites.Recipe;
 import com.spring.projects.app.exception.RecipeNotExistsException;
 import com.spring.projects.app.repositories.RecipeRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -25,37 +26,42 @@ public class RecipeService {
 	private final ModelMapper mapper;
 	
 	private final UserService userService;
+	private final IdGenerationService idGenerationService;
 
+	@Transactional
 	public ResponseDto add(RecipeDto recipe) {
 		Recipe mappedRecipe = mapper.map(recipe, Recipe.class);
+		mappedRecipe.setExtId(idGenerationService.generate());
 		mappedRecipe.setUser(userService.getLoggedInUserDetails());
 		mappedRecipe.setTimestamp(LocalDateTime.now());
 		return new ResponseDto(ResponseStatusCode.SUCCESS, "Added Successfully", mapper.map(recipeRepo.save(mappedRecipe), RecipeDto.class));
 	}
 
-	public ResponseDto edit(RecipeDto recipe, Long id) {
-		return recipeRepo.findByIdAndUser(id, userService.getLoggedInUserDetails()).map((existing) -> {
+	@Transactional
+	public ResponseDto edit(RecipeDto recipe, String extId) {
+		return recipeRepo.findByExtIdAndUser(extId, userService.getLoggedInUserDetails()).map((existing) -> {
 			mapper.map(recipe, existing);
 			existing.setTimestamp(LocalDateTime.now());
 			return new ResponseDto(ResponseStatusCode.SUCCESS, "Updated Successfully", mapper.map(recipeRepo.save(existing), RecipeDto.class));
 		})
-		.orElseThrow(() -> new RecipeNotExistsException("This particular recipe with id: " + id + " not exists yet"));
+		.orElseThrow(() -> new RecipeNotExistsException("This particular recipe with id: " + extId + " not exists yet"));
 
 	}
 	
-	public ResponseDto delete(Long id) {
-		boolean status = recipeRepo.deleteByIdAndUser(id, userService.getLoggedInUserDetails());
-		if(status) 
+	@Transactional
+	public ResponseDto delete(String extId) {
+		int status = recipeRepo.deleteByExtIdAndUser(extId, userService.getLoggedInUserDetails());
+		if(status == 1) 
 			return new ResponseDto(ResponseStatusCode.SUCCESS, "Deleted Successfully", "[]");
-		throw new RecipeNotExistsException("This particular recipe with id: " + id + " not exists yet");
+		throw new RecipeNotExistsException("This particular recipe with id: " + extId + " not exists yet");
 	}
 	
-	public ResponseDto get(Long id) {
-		return recipeRepo.findByIdAndUser(id, userService.getLoggedInUserDetails()).map(recipe->{
+	public ResponseDto get(String extId) {
+		return recipeRepo.findByExtIdAndUser(extId, userService.getLoggedInUserDetails()).map(recipe->{
 			RecipeDto dto = mapper.map(recipe, RecipeDto.class);
 			return new ResponseDto(ResponseStatusCode.SUCCESS, "Recipe Found", dto);
 		})
-		.orElseThrow(()->new RecipeNotExistsException("This particular recipe with id: " + id + " not exists for this user"));
+		.orElseThrow(()->new RecipeNotExistsException("This particular recipe with id: " + extId + " not exists for this user"));
 	}
 	
 	public ResponseDto getAll() {

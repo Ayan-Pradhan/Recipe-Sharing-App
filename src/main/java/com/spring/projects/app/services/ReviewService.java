@@ -10,6 +10,7 @@ import com.spring.projects.app.constants.ResponseStatusCode;
 import com.spring.projects.app.dtos.ResponseDto;
 import com.spring.projects.app.dtos.ReviewDto;
 import com.spring.projects.app.entites.Review;
+import com.spring.projects.app.entites.User;
 import com.spring.projects.app.exception.RecipeNotExistsException;
 import com.spring.projects.app.exception.RecordNotFoundException;
 import com.spring.projects.app.repositories.RecipeRepository;
@@ -27,19 +28,23 @@ public class ReviewService {
 	private final ModelMapper mapper;
 	
 	private final UserService userService;
+	private final IdGenerationService idGenerationService;
 	
-	public ResponseDto addReview(ReviewDto review, Long recipeId) {
-		return recipeRepo.findById(recipeId).map(recipe->{
+	public ResponseDto addReview(ReviewDto review, String recipeId) {
+		return recipeRepo.findByExtId(recipeId).map(recipe->{
+			User user = userService.getLoggedInUserDetails();
 			Review mappedReview = mapper.map(review, Review.class);
+			mappedReview.setExtId(idGenerationService.generate());
 			mappedReview.setRecipe(recipe);
-			mappedReview.setUser(userService.getLoggedInUserDetails());
+			mappedReview.setUsername(user.getEmail());
+			mappedReview.setUser(user);
 			return new ResponseDto(ResponseStatusCode.SUCCESS, "Review added", mapper.map(reviewRepo.save(mappedReview), ReviewDto.class));
 		})
 		.orElseThrow(()->new RecipeNotExistsException("Recipe with id "+recipeId+"not exists"));	
 	}
 	
-	public ResponseDto getReviews(Long recipeId) {
-		return recipeRepo.findById(recipeId).map(recipe->{
+	public ResponseDto getReviews(String recipeId) {
+		return recipeRepo.findByExtId(recipeId).map(recipe->{
 			List<ReviewDto> dtos = mapper.map(reviewRepo.findByRecipe(recipe), new TypeToken<List<ReviewDto>>() {}.getType());
 			if(dtos.isEmpty()) 
 				throw new RecordNotFoundException("No reviews found for this recipe");

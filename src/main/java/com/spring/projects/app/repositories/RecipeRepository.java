@@ -12,8 +12,8 @@ import com.spring.projects.app.entites.User;
 @Repository
 public interface RecipeRepository extends JpaRepository<Recipe, Long>{
 
-	Optional<Recipe> findByIdAndUser(Long id, User user);
+	Optional<Recipe> findByExtIdAndUser(String extId, User user);
 	List<Recipe> findByUser(User user);
-
-	boolean deleteByIdAndUser(Long id, User user);
+	Optional<Recipe> findByExtId(String extId);
+	int deleteByExtIdAndUser(String extId, User user);
 }

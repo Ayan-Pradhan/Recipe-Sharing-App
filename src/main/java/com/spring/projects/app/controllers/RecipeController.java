@@ -38,7 +38,7 @@ public class RecipeController {
 	}
 	
 	@GetMapping("/recipes/{id}")
-	public ResponseEntity<ResponseDto> getRecipe(@PathVariable Long id) {
+	public ResponseEntity<ResponseDto> getRecipe(@PathVariable String id) {
 		return ResponseEntity.ok(recipes.get(id));
 	}
 	
@@ -48,22 +48,22 @@ public class RecipeController {
 	}
 	
 	@PatchMapping("/recipes/{id}")
-	public ResponseEntity<ResponseDto> updateRecipe(@RequestBody RecipeDto recipe,@PathVariable Long id) {
+	public ResponseEntity<ResponseDto> updateRecipe(@RequestBody RecipeDto recipe,@PathVariable String id) {
 		return ResponseEntity.ok(recipes.edit(recipe, id));
 	}
 	
 	@DeleteMapping("/recipes/{id}")
-	public ResponseEntity<ResponseDto> deleteRecipe(@PathVariable Long id) {
+	public ResponseEntity<ResponseDto> deleteRecipe(@PathVariable String id) {
 		return ResponseEntity.ok(recipes.delete(id));
 	}
 	
 	@PostMapping("recipes/reviews/{recipeId}")
-	public ResponseEntity<ResponseDto> reviewRecipe(@RequestBody ReviewDto review, @PathVariable Long recipeId) {
+	public ResponseEntity<ResponseDto> reviewRecipe(@RequestBody ReviewDto review, @PathVariable String recipeId) {
 		return ResponseEntity.ok(reviews.addReview(review, recipeId));
 	}
 	
 	@GetMapping("recipes/reviews/{recipeId}")
-	public ResponseEntity<ResponseDto> reviewRecipe(@PathVariable Long recipeId) {
+	public ResponseEntity<ResponseDto> reviewRecipe(@PathVariable String recipeId) {
 		return ResponseEntity.ok(reviews.getReviews(recipeId));
 	}
 	
@@ -72,12 +72,12 @@ public class RecipeController {
 		return ResponseEntity.ok(favourites.addToFavourites(recipeId));
 	}
 	
-	@GetMapping("recipes/favourites")
+	@GetMapping("/recipes/favourites")
 	public ResponseEntity<ResponseDto> favourites(){
 		return ResponseEntity.ok(favourites.getFavourites());
 	}
 	
-	@PostMapping("recipes/recommend")
+	@PostMapping("/recipes/recommend")
 	public ResponseEntity<ResponseDto> recommendRecipe(@RequestBody RecommendRequest details) {
 		return ResponseEntity.ok(recommendations.getRecommendedRecipes(details));
 	}

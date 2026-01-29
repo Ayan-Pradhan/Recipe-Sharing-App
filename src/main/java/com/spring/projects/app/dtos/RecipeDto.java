@@ -15,7 +15,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class RecipeDto {
 	
-	private Long id;
+	private String id;
 	
 	@Size(min = 1, message = "Title can't be empty")
 	private String title;
