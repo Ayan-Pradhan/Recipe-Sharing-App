@@ -13,71 +13,46 @@ import org.springframework.web.bind.annotation.RestController;
 import com.spring.projects.app.dtos.RecipeDto;
 import com.spring.projects.app.dtos.RecommendRequest;
 import com.spring.projects.app.dtos.ResponseDto;
-import com.spring.projects.app.dtos.ReviewDto;
-import com.spring.projects.app.services.FavouritesService;
 import com.spring.projects.app.services.RecipeService;
 import com.spring.projects.app.services.RecommendService;
-import com.spring.projects.app.services.ReviewService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/recipes")
 public class RecipeController {
 	
 	private final RecipeService recipes;
 	private final RecommendService recommendations;
-	private final ReviewService reviews;
-	private final FavouritesService favourites;
 
-	@GetMapping("recipes") 			// add pagination 
+	@GetMapping("/all") 			// add pagination 
 	public ResponseEntity<ResponseDto> getAllRecipe() {
 		return ResponseEntity.ok(recipes.getAll());
 	}
 	
-	@GetMapping("/recipes/{id}")
-	public ResponseEntity<ResponseDto> getRecipe(@PathVariable String id) {
-		return ResponseEntity.ok(recipes.get(id));
+	@GetMapping("/recipe/{recipeId}")
+	public ResponseEntity<ResponseDto> getRecipe(@PathVariable String recipeId) {
+		return ResponseEntity.ok(recipes.get(recipeId));
 	}
 	
-	@PostMapping("/recipes")
+	@PatchMapping("/recipe/{recipeId}")
+	public ResponseEntity<ResponseDto> updateRecipe(@RequestBody RecipeDto recipe,@PathVariable String recipeId) {
+		return ResponseEntity.ok(recipes.edit(recipe, recipeId));
+	}
+	
+	@DeleteMapping("/recipe/{id}")
+	public ResponseEntity<ResponseDto> deleteRecipe(@PathVariable String recipeId) {
+		return ResponseEntity.ok(recipes.delete(recipeId));
+	}
+	
+	@PostMapping("/recipe")
 	public ResponseEntity<ResponseDto> addRecipe(@Valid @RequestBody RecipeDto recipe) {
 		return ResponseEntity.ok(recipes.add(recipe));
 	}
 	
-	@PatchMapping("/recipes/{id}")
-	public ResponseEntity<ResponseDto> updateRecipe(@RequestBody RecipeDto recipe,@PathVariable String id) {
-		return ResponseEntity.ok(recipes.edit(recipe, id));
-	}
-	
-	@DeleteMapping("/recipes/{id}")
-	public ResponseEntity<ResponseDto> deleteRecipe(@PathVariable String id) {
-		return ResponseEntity.ok(recipes.delete(id));
-	}
-	
-	@PostMapping("recipes/reviews/{recipeId}")
-	public ResponseEntity<ResponseDto> reviewRecipe(@RequestBody ReviewDto review, @PathVariable String recipeId) {
-		return ResponseEntity.ok(reviews.addReview(review, recipeId));
-	}
-	
-	@GetMapping("recipes/reviews/{recipeId}")
-	public ResponseEntity<ResponseDto> reviewRecipe(@PathVariable String recipeId) {
-		return ResponseEntity.ok(reviews.getReviews(recipeId));
-	}
-	
-	@GetMapping("/recipes/favourites/{recipeId}")
-	public ResponseEntity<ResponseDto> addFavourite(@PathVariable Long recipeId) {
-		return ResponseEntity.ok(favourites.addToFavourites(recipeId));
-	}
-	
-	@GetMapping("/recipes/favourites")
-	public ResponseEntity<ResponseDto> favourites(){
-		return ResponseEntity.ok(favourites.getFavourites());
-	}
-	
-	@PostMapping("/recipes/recommend")
+	@PostMapping("/recipe/recommend")
 	public ResponseEntity<ResponseDto> recommendRecipe(@RequestBody RecommendRequest details) {
 		return ResponseEntity.ok(recommendations.getRecommendedRecipes(details));
 	}
