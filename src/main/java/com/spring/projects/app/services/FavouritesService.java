@@ -7,6 +7,7 @@ import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 
 import com.spring.projects.app.constants.ResponseStatusCode;
+import com.spring.projects.app.dtos.FavouritesDto;
 import com.spring.projects.app.dtos.RecipeDto;
 import com.spring.projects.app.dtos.ResponseDto;
 import com.spring.projects.app.entites.Favourites;
@@ -16,6 +17,7 @@ import com.spring.projects.app.exception.RecordNotFoundException;
 import com.spring.projects.app.repositories.FavouritesRepository;
 import com.spring.projects.app.repositories.RecipeRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -26,20 +28,33 @@ public class FavouritesService {
 	private final FavouritesRepository favouriteRepo;
 	
 	private final UserService userService;
+	public final IdGenerationService idGenerationService;
 	
 	private final ModelMapper mapper;
 	
-	public ResponseDto addToFavourites(Long recipeId) {
-		return recipeRepo.findById(recipeId).map(recipe->{
+	@Transactional
+	public ResponseDto add(String recipeId) {
+		return recipeRepo.findByExtId(recipeId).map(recipe->{
 			Favourites favourite = new Favourites();
+			favourite.setExtId(idGenerationService.generate());
 			favourite.setRecipe(recipe);
 			favourite.setUser(userService.getLoggedInUserDetails());
-			return new ResponseDto(ResponseStatusCode.SUCCESS, "Added to favourites", favouriteRepo.save(favourite));
+			return new ResponseDto(ResponseStatusCode.SUCCESS, "Added to favourites", mapper.map(favouriteRepo.save(favourite), FavouritesDto.class));
 		})
 		.orElseThrow(()->new RecipeNotExistsException("This particular recipe with id: " + recipeId + " not exists"));
 	}
+	
+	@Transactional
+	public ResponseDto delete(String extId) {
+		int status = favouriteRepo.deleteByExtIdAndUser(extId, userService.getLoggedInUserDetails());
+		if(status == 1)
+			return new ResponseDto(ResponseStatusCode.SUCCESS, "Deleted from favourites", "[]");
+		throw new RecordNotFoundException("No record found with the id "+extId);
+	}
 
-	public ResponseDto getFavourites() {
+	
+	//needs fixing
+	public ResponseDto getAll() {
 		List<Favourites> favouriteRecipes = favouriteRepo.findByUser(userService.getLoggedInUserDetails());
 		if(favouriteRecipes.isEmpty())
 			throw new RecordNotFoundException("No favourite recipe found");

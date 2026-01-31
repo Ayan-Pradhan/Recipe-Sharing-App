@@ -11,4 +11,5 @@ import com.spring.projects.app.entites.User;
 @Repository
 public interface FavouritesRepository extends JpaRepository<Favourites, Long>{
 	List<Favourites> findByUser(User user);
+	int deleteByExtIdAndUser(String extId, User user);
 }
