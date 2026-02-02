@@ -21,7 +21,7 @@ public class FavouritesController {
 	private final FavouritesService favourites;
 	
 	@GetMapping("/favourite/all")
-	public ResponseEntity<ResponseDto> favourites(){
+	public ResponseEntity<ResponseDto> getFavourites(){
 		return ResponseEntity.ok(favourites.getAll());
 	}
 	

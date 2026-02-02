@@ -1,6 +1,7 @@
 package com.spring.projects.app.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -31,19 +32,9 @@ public class ReviewService {
 	private final UserService userService;
 	private final IdGenerationService idGenerationService;
 	
-	public ResponseDto get(String recipeId) {
-		return recipeRepo.findByExtId(recipeId).map(recipe->{
-			List<ReviewDto> dtos = mapper.map(reviewRepo.findByRecipe(recipe), new TypeToken<List<ReviewDto>>() {}.getType());
-			if(dtos.isEmpty()) 
-				throw new RecordNotFoundException("No reviews found for this recipe");
-			return new ResponseDto(ResponseStatusCode.SUCCESS,"Reviews found", dtos);
-		})
-		.orElseThrow(()->new RecipeNotExistsException("Recipe with id "+recipeId+"not exists"));
-	}
-	
 	@Transactional
-	public ResponseDto add(ReviewDto review, String recipeId) {
-		return recipeRepo.findByExtId(recipeId).map(recipe->{
+	public ResponseDto add(ReviewDto review, String extId) {
+		return recipeRepo.findByExtId(extId).map(recipe->{
 			User user = userService.getLoggedInUserDetails();
 			Review mappedReview = mapper.map(review, Review.class);
 			mappedReview.setExtId(idGenerationService.generate());
@@ -52,7 +43,7 @@ public class ReviewService {
 			mappedReview.setUser(user);
 			return new ResponseDto(ResponseStatusCode.SUCCESS, "Review added", mapper.map(reviewRepo.save(mappedReview), ReviewDto.class));
 		})
-		.orElseThrow(()->new RecipeNotExistsException("Recipe with id "+recipeId+"not exists"));	
+		.orElseThrow(()->new RecipeNotExistsException("Recipe with id "+extId+"not exists"));	
 	}
 	
 	@Transactional
@@ -63,6 +54,16 @@ public class ReviewService {
 		throw new RecordNotFoundException("Review with id "+extId+" not exist");
 	}
 	
+	
+	public ResponseDto get(String recipeId) {
+		return recipeRepo.findByExtId(recipeId).map(recipe->{
+			List<ReviewDto> dtos = mapper.map(reviewRepo.findByRecipe(recipe), new TypeToken<List<ReviewDto>>() {}.getType());
+			if(dtos.isEmpty()) 
+				throw new RecordNotFoundException("No reviews found for this recipe");
+			return new ResponseDto(ResponseStatusCode.SUCCESS,"Reviews found", dtos);
+		})
+		.orElseThrow(()->new RecipeNotExistsException("Recipe with id "+recipeId+"not exists"));
+	}
 	
 	
 	

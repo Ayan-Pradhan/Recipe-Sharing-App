@@ -21,11 +21,13 @@ public class Favourites {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@JsonIgnore
 	private Long id;
 	
 	private String extId;
 	
 	@ManyToOne
+	@JsonIgnore
 	private Recipe recipe;
 	
 	@ManyToOne

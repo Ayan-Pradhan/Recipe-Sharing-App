@@ -12,6 +12,6 @@ import lombok.Setter;
 public class FavouritesDto {
 	
 	private String id;
-	private RecipeDto recipeDto;
+	private RecipeDto recipe;
 
 }

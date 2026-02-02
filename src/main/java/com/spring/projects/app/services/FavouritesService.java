@@ -8,10 +8,8 @@ import org.springframework.stereotype.Service;
 
 import com.spring.projects.app.constants.ResponseStatusCode;
 import com.spring.projects.app.dtos.FavouritesDto;
-import com.spring.projects.app.dtos.RecipeDto;
 import com.spring.projects.app.dtos.ResponseDto;
 import com.spring.projects.app.entites.Favourites;
-import com.spring.projects.app.entites.Recipe;
 import com.spring.projects.app.exception.RecipeNotExistsException;
 import com.spring.projects.app.exception.RecordNotFoundException;
 import com.spring.projects.app.repositories.FavouritesRepository;
@@ -48,24 +46,19 @@ public class FavouritesService {
 	public ResponseDto delete(String extId) {
 		int status = favouriteRepo.deleteByExtIdAndUser(extId, userService.getLoggedInUserDetails());
 		if(status == 1)
-			return new ResponseDto(ResponseStatusCode.SUCCESS, "Deleted from favourites", "[]");
+			return new ResponseDto(ResponseStatusCode.SUCCESS, "Removed from favourites", "[]");
 		throw new RecordNotFoundException("No record found with the id "+extId);
 	}
 
 	
-	//needs fixing
 	public ResponseDto getAll() {
 		List<Favourites> favouriteRecipes = favouriteRepo.findByUser(userService.getLoggedInUserDetails());
 		if(favouriteRecipes.isEmpty())
-			throw new RecordNotFoundException("No favourite recipe found");
+			throw new RecordNotFoundException("No favourite recipes found for the user");
 		
-		List<Recipe> recipes = favouriteRecipes.stream()
-				.map(Favourites::getRecipe)
-				.toList();
+		List<FavouritesDto> mappedFavourites = mapper.map(favouriteRecipes, new TypeToken<List<FavouritesDto>>() {}.getType());
 		
-		List<RecipeDto> mappedRecipes = mapper.map(recipes, new TypeToken<List<RecipeDto>>() {}.getType());
-		
-		return new ResponseDto(ResponseStatusCode.SUCCESS, "Favourites found", mappedRecipes);
+		return new ResponseDto(ResponseStatusCode.SUCCESS, "Favourites found", mappedFavourites);
 	}
 
 }
