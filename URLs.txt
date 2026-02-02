@@ -1,0 +1,21 @@
+# List of entrypoints:
+
+## User
+
+
+
+## Recipe
+
+
+
+## Review
+
+http://localhost:8080/api/reviews/review/recipe/recipe_id -- GET
+http://localhost:8080/api/reviews/review/recipe/recipe_id -- POST
+http://localhost:8080/api/reviews/review/review_id -- DELETE
+
+## Favourites
+
+http://localhost:8080/api/favourites/favourite/all -- GET
+http://localhost:8080/api/favourites/favourite/recipe/recipe_id -- POST
+http://localhost:8080/api/favourites/favourite/favourite_id -- DELETE
