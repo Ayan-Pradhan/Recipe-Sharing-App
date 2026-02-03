@@ -6,7 +6,12 @@
 
 ## Recipe
 
-
+http://localhost:8080/api/recipes/recipe -- POST
+http://localhost:8080/api/recipes/recipe/all -- GET
+http://localhost:8080/api/recipes/recipe/recommend -- POST
+http://localhost:8080/api/recipes/recipe/recipe_id -- GET
+http://localhost:8080/api/recipes/recipe/recipe_id -- PATCH
+http://localhost:8080/api/recipes/recipe/recipe_id -- DELETE
 
 ## Review
 
