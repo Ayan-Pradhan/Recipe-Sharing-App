@@ -27,7 +27,7 @@ public class RecipeController {
 	private final RecipeService recipes;
 	private final RecommendService recommendations;
 
-	@GetMapping("/all") 			// add pagination 
+	@GetMapping("recipe/all") 			// add pagination 
 	public ResponseEntity<ResponseDto> getAllRecipe() {
 		return ResponseEntity.ok(recipes.getAll());
 	}
@@ -37,19 +37,19 @@ public class RecipeController {
 		return ResponseEntity.ok(recipes.get(recipeId));
 	}
 	
+	@PostMapping("/recipe")
+	public ResponseEntity<ResponseDto> addRecipe(@Valid @RequestBody RecipeDto recipe) {
+		return ResponseEntity.ok(recipes.add(recipe));
+	}
+	
 	@PatchMapping("/recipe/{recipeId}")
 	public ResponseEntity<ResponseDto> updateRecipe(@RequestBody RecipeDto recipe,@PathVariable String recipeId) {
 		return ResponseEntity.ok(recipes.edit(recipe, recipeId));
 	}
 	
-	@DeleteMapping("/recipe/{id}")
+	@DeleteMapping("/recipe/{recipeId}")
 	public ResponseEntity<ResponseDto> deleteRecipe(@PathVariable String recipeId) {
 		return ResponseEntity.ok(recipes.delete(recipeId));
-	}
-	
-	@PostMapping("/recipe")
-	public ResponseEntity<ResponseDto> addRecipe(@Valid @RequestBody RecipeDto recipe) {
-		return ResponseEntity.ok(recipes.add(recipe));
 	}
 	
 	@PostMapping("/recipe/recommend")
