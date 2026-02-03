@@ -2,7 +2,8 @@
 
 ## User
 
-
+http://localhost:8080/users/auth/sign-up -- POST
+http://localhost:8080/users/auth/login -- POST
 
 ## Recipe
 
