@@ -13,6 +13,7 @@ import com.spring.projects.app.dtos.ResponseDto;
 import com.spring.projects.app.dtos.ReviewDto;
 import com.spring.projects.app.services.ReviewService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -28,7 +29,7 @@ public class ReviewController {
 	}
 
 	@PostMapping("/review/recipe/{recipeId}")
-	public ResponseEntity<ResponseDto> addReview(@RequestBody ReviewDto review, @PathVariable String recipeId) {
+	public ResponseEntity<ResponseDto> addReview(@RequestBody @Valid ReviewDto review, @PathVariable String recipeId) {
 		return ResponseEntity.ok(reviews.add(review, recipeId));
 	}
 	

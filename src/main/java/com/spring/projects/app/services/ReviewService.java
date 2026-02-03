@@ -1,7 +1,6 @@
 package com.spring.projects.app.services;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -38,8 +37,8 @@ public class ReviewService {
 			User user = userService.getLoggedInUserDetails();
 			Review mappedReview = mapper.map(review, Review.class);
 			mappedReview.setExtId(idGenerationService.generate());
-			mappedReview.setRecipe(recipe);
 			mappedReview.setUsername(user.getEmail());
+			mappedReview.setRecipe(recipe);
 			mappedReview.setUser(user);
 			return new ResponseDto(ResponseStatusCode.SUCCESS, "Review added", mapper.map(reviewRepo.save(mappedReview), ReviewDto.class));
 		})

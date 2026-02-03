@@ -1,6 +1,6 @@
 package com.spring.projects.app.dtos;
 
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +14,6 @@ public class ReviewDto {
 	private String id;
 	private String username;
 	
-	@NotEmpty(message = "Review must not be empty")
+	@NotBlank(message = "Review must not be empty")
 	private String review;
 }
