@@ -17,7 +17,7 @@ public class RecommendResponse {
 	@Size(min = 1, message = "Title can't be empty")
 	private String title;
 	
-	@Size(max = 200, message = "Description shouldn't be greater than 200 chars")
+	@Size(min = 20, max = 200, message = "Description shouldn't be greater than 200 chars")
 	private String description;
 	
 	@Size(min = 1, message = "Please mention cooking time")
