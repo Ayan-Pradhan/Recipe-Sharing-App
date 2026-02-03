@@ -27,7 +27,7 @@ public class RecipeController {
 	private final RecipeService recipes;
 	private final RecommendService recommendations;
 
-	@GetMapping("recipe/all") 			// add pagination 
+	@GetMapping("recipe/all") 
 	public ResponseEntity<ResponseDto> getAllRecipe() {
 		return ResponseEntity.ok(recipes.getAll());
 	}
