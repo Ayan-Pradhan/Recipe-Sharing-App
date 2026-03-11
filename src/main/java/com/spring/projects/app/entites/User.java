@@ -2,8 +2,12 @@ package com.spring.projects.app.entites;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,12 +26,23 @@ public class User {
 	private String password;
 	private String role;
 	
+	@JsonIgnore
 	@OneToMany(mappedBy = "user")
 	private List<Recipe> recipes;
 	
+	@JsonIgnore
 	@OneToMany(mappedBy = "user")
 	private List<Review> reviews;
 	
+	@JsonIgnore
 	@OneToMany(mappedBy = "user")
 	private List<Favourites> favourites;
+	
+	@JsonIgnore
+	@ManyToMany(fetch = FetchType.LAZY)
+	private List<Follow> follwing;
+	
+	@JsonIgnore
+	@ManyToMany(mappedBy = "following", fetch = FetchType.LAZY)
+	private List<Follow> follwers;
 }
