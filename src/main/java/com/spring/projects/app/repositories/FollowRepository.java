@@ -5,6 +5,8 @@ import org.springframework.stereotype.Repository;
 
 import com.spring.projects.app.entites.Follow;
 
+// work in progress
+
 @Repository
 public interface FollowRepository extends JpaRepository<Follow, Long>{
 

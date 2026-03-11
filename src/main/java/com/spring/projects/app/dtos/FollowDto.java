@@ -4,6 +4,8 @@ import com.spring.projects.app.entites.User;
 
 import lombok.Data;
 
+// work in progress
+
 @Data
 public class FollowDto {
 	
